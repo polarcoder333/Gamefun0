@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Game Sederhana</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #f1c40f;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .games-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-align: center;
+        }
+        
+        .game-area {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .game-instructions {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        /* Game 1: Klik Target */
+        #target {
+            width: 50px;
+            height: 50px;
+            background: #e74c3c;
+            border-radius: 50%;
+            cursor: pointer;
+            position: absolute;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+            transition: transform 0.1s;
+        }
+        
+        #target:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Game 2: Tebak Angka */
+        #guess-input {
+            width: 100px;
+            padding: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        
+        #guess-message {
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 24px;
+        }
+        
+        /* Game 3: Reaksi */
+        #reaction-box {
+            width: 100px;
+            height: 100px;
+            background: #2ecc71;
+            cursor: pointer;
+            display: none;
+            border-radius: 10px;
+        }
+        
+        #reaction-message {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .active {
+            background: #2ecc71 !important;
+        }
+        
+        .waiting {
+            background: #e74c3c !important;
+        }
+        
+        @media (max-width: 768px) {
+            .games-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-card {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 3 Game Sederhana 🎮</h1>
+            <p class="subtitle">Pilih dan mainkan game favorit Anda!</p>
+        </header>
+        
+        <div class="games-container">
+            <!-- Game 1: Klik Target -->
+            <div class="game-card">
+                <h2 class="game-title">🎯 Klik Target</h2>
+                
+                <div class="game-info">
+                    <div class="info-item">
+                        <div class="info-label">Skor</div>
+                        <div id="score1" class="info-value">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Waktu</div>
+                        <div id="timer1" class="info-value">30</div>
+                    </div>
+                </div>
+                
+                <div class="game-area" id="game1-area">
+                    <div id="target"></div>
+                </div>
+                
+                <div class="controls">
+                    <button id="start1">Mulai</button>
+                    <button id="reset1">Reset</button>
+                </div>
+                
+                <div class="game-instructions">
+                    <p>Klik target secepat mungkin sebelum waktu habis! Setiap klik = +10 poin.</p>
+                </div>
+            </div>
+            
+            <!-- Game 2: Tebak Angka -->
+            <div class="game-card">
+                <h2 class="game-title">🔢 Tebak Angka</h2>
+                
+                <div class="game-info">
+                    <div class="info-item">
+                        <div class="info-label">Percobaan</div>
+                        <div id="attempts" class="info-value">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tebakan</div>
+                        <div id="last-guess" class="info-value">-</div>
+                    </div>
+                </div>
+                
+                <div class="game-area" id="game2-area">
+                    <div>
+                        <p>Tebak angka antara 1-100</p>
+                        <input type="number" id="guess-input" min="1" max="100">
+                        <div id="guess-message"></div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="guess-btn">Tebak</button>
+                    <button id="new-game">Game Baru</button>
+                </div>
+                
+                <div class="game-instructions">
+                    <p>Tebak angka rahasia! Setelah menebak, akan ada petunjuk "Terlalu tinggi" atau "Terlalu rendah".</p>
+                </div>
+            </div>
+            
+            <!-- Game 3: Tes Reaksi -->
+            <div class="game-card">
+                <h2 class="game-title">⚡ Tes Reaksi</h2>
+                
+                <div class="game-info">
+                    <div class="info-item">
+                        <div class="info-label">Waktu</div>
+                        <div id="reaction-time" class="info-value">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Rata-rata</div>
+                        <div id="average-time" class="info-value">-</div>
+                    </div>
+                </div>
+                
+                <div class="game-area" id="game3-area">
+                    <div id="reaction-box"></div>
+                    <div id="reaction-message">Klik "Mulai" untuk memulai tes</div>
+                </div>
+                
+                <div class="controls">
+                    <button id="start3">Mulai</button>
+                    <button id="reset3">Reset</button>
+                </div>
+                
+                <div class="game-instructions">
+                    <p>Klik kotak secepat mungkin setelah berubah warna! Coba dapatkan waktu reaksi tercepat.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GAME 1: KLIK TARGET ====================
+        const target = document.getElementById('target');
+        const score1Element = document.getElementById('score1');
+        const timer1Element = document.getElementById('timer1');
+        const start1Btn = document.getElementById('start1');
+        const reset1Btn = document.getElementById('reset1');
+        const game1Area = document.getElementById('game1-area');
+        
+        let score1 = 0;
+        let timer1 = 30;
+        let game1Active = false;
+        let game1Timer;
+        
+        // Pindahkan target ke posisi acak
+        function moveTarget() {
+            if (!game1Active) return;
+            
+            const maxX = game1Area.clientWidth - 50;
+            const maxY = game1Area.clientHeight - 50;
+            const x = Math.floor(Math.random() * maxX);
+            const y = Math.floor(Math.random() * maxY);
+            
+            target.style.left = `${x}px`;
+            target.style.top = `${y}px`;
+        }
+        
+        // Klik target
+        target.addEventListener('click', () => {
+            if (!game1Active) return;
+            
+            score1 += 10;
+            score1Element.textContent = score1;
+            moveTarget();
+        });
+        
+        // Mulai game 1
+        start1Btn.addEventListener('click', () => {
+            if (game1Active) return;
+            
+            game1Active = true;
+            score1 = 0;
+            timer1 = 30;
+            score1Element.textContent = score1;
+            timer1Element.textContent = timer1;
+            
+            start1Btn.disabled = true;
+            start1Btn.textContent = "Berjalan...";
+            
+            // Pindahkan target ke posisi awal
+            moveTarget();
+            
+            // Timer
+            game1Timer = setInterval(() => {
+                timer1--;
+                timer1Element.textContent = timer1;
+                
+                if (timer1 <= 0) {
+                    endGame1();
+                }
+            }, 1000);
+        });
+        
+        // Akhiri game 1
+        function endGame1() {
+            game1Active = false;
+            clearInterval(game1Timer);
+            
+            start1Btn.disabled = false;
+            start1Btn.textContent = "Mulai";
+            
+            alert(`Game selesai! Skor akhir: ${score1}`);
+        }
+        
+        // Reset game 1
+        reset1Btn.addEventListener('click', () => {
+            game1Active = false;
+            clearInterval(game1Timer);
+            
+            score1 = 0;
+            timer1 = 30;
+            score1Element.textContent = score1;
+            timer1Element.textContent = timer1;
+            
+            start1Btn.disabled = false;
+            start1Btn.textContent = "Mulai";
+            
+            target.style.left = "50%";
+            target.style.top = "50%";
+        });
+        
+        // ==================== GAME 2: TEBAK ANGKA ====================
+        const guessInput = document.getElementById('guess-input');
+        const guessBtn = document.getElementById('guess-btn');
+        const newGameBtn = document.getElementById('new-game');
+        const guessMessage = document.getElementById('guess-message');
+        const attemptsElement = document.getElementById('attempts');
+        const lastGuessElement = document.getElementById('last-guess');
+        
+        let secretNumber;
+        let attempts = 0;
+        
+        // Mulai game baru
+        function startNewGame() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            attemptsElement.textContent = attempts;
+            lastGuessElement.textContent = "-";
+            guessMessage.textContent = "Tebak angka antara 1-100";
+            guessMessage.style.color = "white";
+            guessInput.value = "";
+            guessInput.disabled = false;
+            guessBtn.disabled = false;
+        }
+        
+        // Cek tebakan
+        guessBtn.addEventListener('click', () => {
+            if (!secretNumber) startNewGame();
+            
+            const guess = parseInt(guessInput.value);
+            
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                guessMessage.textContent = "Masukkan angka 1-100!";
+                guessMessage.style.color = "#e74c3c";
+                return;
+            }
+            
+            attempts++;
+            attemptsElement.textContent = attempts;
+            lastGuessElement.textContent = guess;
+            
+            if (guess === secretNumber) {
+                guessMessage.textContent = `Selamat! Anda benar dalam ${attempts} percobaan!`;
+                guessMessage.style.color = "#2ecc71";
+                guessInput.disabled = true;
+                guessBtn.disabled = true;
+            } else if (guess < secretNumber) {
+                guessMessage.textContent = "Terlalu rendah! Coba lagi.";
+                guessMessage.style.color = "#3498db";
+            } else {
+                guessMessage.textContent = "Terlalu tinggi! Coba lagi.";
+                guessMessage.style.color = "#e74c3c";
+            }
+            
+            guessInput.value = "";
+            guessInput.focus();
+        });
+        
+        // Enter untuk menebak
+        guessInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                guessBtn.click();
+            }
+        });
+        
+        // Tombol game baru
+        newGameBtn.addEventListener('click', startNewGame);
+        
+        // Mulai game pertama
+        startNewGame();
+        
+        // ==================== GAME 3: TES REAKSI ====================
+        const reactionBox = document.getElementById('reaction-box');
+        const start3Btn = document.getElementById('start3');
+        const reset3Btn = document.getElementById('reset3');
+        const reactionMessage = document.getElementById('reaction-message');
+        const reactionTimeElement = document.getElementById('reaction-time');
+        const averageTimeElement = document.getElementById('average-time');
+        
+        let reactionStartTime;
+        let reactionTimes = [];
+        let reactionWaiting = false;
+        
+        // Mulai tes reaksi
+        start3Btn.addEventListener('click', () => {
+            if (reactionWaiting) return;
+            
+            reactionWaiting = true;
+            reactionBox.style.display = "none";
+            reactionMessage.textContent = "Tunggu kotak berubah warna...";
+            start3Btn.disabled = true;
+            start3Btn.textContent = "Menunggu...";
+            start3Btn.classList.add("waiting");
+            
+            // Waktu acak antara 1-3 detik
+            const waitTime = Math.random() * 2000 + 1000;
+            
+            setTimeout(() => {
+                if (!reactionWaiting) return;
+                
+                reactionBox.style.display = "block";
+                reactionBox.style.backgroundColor = "#2ecc71";
+                reactionMessage.textContent = "KLIK SEKARANG!";
+                reactionStartTime = new Date().getTime();
+            }, waitTime);
+        });
+        
+        // Klik kotak reaksi
+        reactionBox.addEventListener('click', () => {
+            if (!reactionWaiting || !reactionStartTime) return;
+            
+            const reactionEndTime = new Date().getTime();
+            const reactionTime = reactionEndTime - reactionStartTime;
+            
+            reactionTimes.push(reactionTime);
+            
+            // Update tampilan
+            reactionTimeElement.textContent = `${reactionTime}ms`;
+            reactionMessage.textContent = reactionTime < 250 ? "Luar biasa cepat!" : 
+                                         reactionTime < 400 ? "Cepat sekali!" : 
+                                         reactionTime < 600 ? "Cukup cepat!" : "Coba lagi lebih cepat!";
+            
+            // Hitung rata-rata
+            const averageTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+            averageTimeElement.textContent = `${Math.round(averageTime)}ms`;
+            
+            // Reset untuk percobaan berikutnya
+            reactionWaiting = false;
+            reactionBox.style.display = "none";
+            start3Btn.disabled = false;
+            start3Btn.textContent = "Lagi";
+            start3Btn.classList.remove("waiting");
+        });
+        
+        // Reset game 3
+        reset3Btn.addEventListener('click', () => {
+            reactionWaiting = false;
+            reactionBox.style.display = "none";
+            reactionMessage.textContent = "Klik 'Mulai' untuk memulai tes";
+            reactionTimeElement.textContent = "-";
+            averageTimeElement.textContent = "-";
+            reactionTimes = [];
+            start3Btn.disabled = false;
+            start3Btn.textContent = "Mulai";
+            start3Btn.classList.remove("waiting");
+        });
+    </script>
+</body>
+</html>
